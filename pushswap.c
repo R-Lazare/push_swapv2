@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:07 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/09 19:03:48 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 19:31:19 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,52 @@ t_data	*init_data(int argc, t_arena *arena)
 	return (data);
 }
 
+void	safe_exit_error(t_arena *arena)
+{
+	printf("Error\n");
+	arena_destroy(arena);
+	exit(0);
+}
+
+int	check_format(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+	{
+		if (ft_isalpha(str[i]))
+			return (0);
+		if (i != 0 && str[i] == '-')
+			return (0);
+		if (i == 0 && str[i] == '-' && str[i + 1] == '\0')
+			return (0);
+		if (str[i] != '-' && !ft_isdigit(str[i]))
+			return (0);
+	}
+	return (1);
+}
+
+int	check_for_duplicates(t_arena *arena, t_pile *pile)
+{
+	t_pile	*current;
+	t_pile	*next;
+
+	current = pile;
+	while (current->next != NULL)
+	{
+		next = current->next;
+		while (next != NULL)
+		{
+			if (current->value == next->value)
+				safe_exit_error(arena);
+			next = next->next;
+		}
+		current = current->next;
+	}
+	return (0);
+}
+
 void	fill_array(t_data *data, char **int_tab_str)
 {
 	int		i;
@@ -32,6 +78,8 @@ void	fill_array(t_data *data, char **int_tab_str)
 	pile_a = data->pile_a;
 	while (i <= data->total_len)
 	{
+		if (!check_format(int_tab_str[i - 1]))
+			safe_exit_error(data->arena);
 		pile_a->value = ft_atoi(data->arena, int_tab_str[i - 1]);
 		pile_a->position = i;
 		pile_a->size = data->total_len;
@@ -45,6 +93,7 @@ void	fill_array(t_data *data, char **int_tab_str)
 	}
 	pile_a->prev->next = NULL;
 	data->arena->curr_offset = data->arena->prev_offset;
+	check_for_duplicates(data->arena, data->pile_a);
 }
 
 void	fill_data(t_data *data, char **argv, int argc)
@@ -321,7 +370,6 @@ void	sort(t_pile **pile_a, t_pile **pile_b, t_data *data)
 		while (*pile_a != lowest)
 			rra(pile_a);
 }
-
 
 int	main(int argc, char **argv)
 {
