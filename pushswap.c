@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:07 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/09 18:26:47 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 19:03:48 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,17 @@ void	fill_array(t_data *data, char **int_tab_str)
 	data->arena->curr_offset = data->arena->prev_offset;
 }
 
-void	fill_data(t_data *data, char **argv)
+void	fill_data(t_data *data, char **argv, int argc)
 {
 	char	**int_tab_str;
 	t_pile	*pile_a;
 
-	data->total_len = count_words(argv[1], ' ');
+	data->total_len = argc - 1;
 	data->pile_a = (t_pile *)arena_alloc(data->arena, sizeof(t_pile));
 	*(data->pile_a) = (t_pile){.cost = INT_MAX, .size = data->total_len,
 		.next = NULL, .prev = NULL, .first = data->pile_a, .last = data->pile_a,
 		.target = NULL, .position = 0, .value = 0};
-	int_tab_str = ft_split(data->arena, argv[1], ' ');
+	int_tab_str = &argv[1];
 	fill_array(data, int_tab_str);
 	pile_a = data->pile_a;
 	while (pile_a->next != NULL)
@@ -328,18 +328,16 @@ int	main(int argc, char **argv)
 	t_arena	*arena;
 	t_data	*data;
 
-	arena = arena_init(2048);
+	arena = arena_init(100000);
 	if (check_args(argc)) //, argv))
 		return (0);
 	data = init_data(argc, arena);
-	fill_data(data, argv);
+	fill_data(data, argv, argc);
 	if (is_sorted(data->pile_a))
 		return (0);
 	if (data->total_len == 3)
 		sort_three(&(data->pile_a));
 	sort(&(data->pile_a), &(data->pile_b), data);
-	printf("After sorting:\n");
-	print_piles(data);
 	arena_destroy(arena);
 	return (0);
 }
