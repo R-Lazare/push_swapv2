@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:05 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/09 15:14:53 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 17:50:30 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,13 @@ long				ft_atoi(t_arena *arena, const char *str);
 char				*ft_substr(t_arena *arena, char const *s,
 						unsigned int start, size_t len);
 void				ra(t_pile **pile_a);
+void				rb(t_pile **pile_b);
 void				rra(t_pile **pile_a);
+void				rrb(t_pile **pile_b);
 void				sa(t_pile **pile_a);
 void				print_structure(t_pile *pile);
 void				pa(t_data *data);
 void				pb(t_data *data);
+void				rrr(t_pile **pile_a, t_pile **pile_b);
+void				rr(t_pile **pile_a, t_pile **pile_b);
+void				rrotate(t_pile **pile);
