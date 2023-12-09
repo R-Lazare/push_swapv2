@@ -93,7 +93,7 @@ void	print_structure(t_pile *pile)
 	}
 }
 
-int	check_args(int argc)//, char **argv)
+int	check_args(int argc) //, char **argv)
 {
 	if (argc < 2)
 		return (1);
@@ -106,7 +106,7 @@ int	main(int argc, char **argv)
 	t_data	*data;
 
 	arena = arena_init(2048);
-	if (check_args(argc))//, argv))
+	if (check_args(argc)) //, argv))
 		return (0);
 	data = init_data(argc, arena);
 	// argument is a single string containing all the numbers like "1 2 -3 4 -5"

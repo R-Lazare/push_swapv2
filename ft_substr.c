@@ -24,9 +24,9 @@ int	ft_strlen(const char *s)
 
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	char			*d;
-	const char		*s;
-	size_t			i;
+	char		*d;
+	const char	*s;
+	size_t		i;
 
 	d = (char *)dst;
 	s = (const char *)src;
