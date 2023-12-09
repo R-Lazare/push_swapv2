@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:05 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/09 05:54:04 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 15:14:53 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,3 +63,5 @@ void				ra(t_pile **pile_a);
 void				rra(t_pile **pile_a);
 void				sa(t_pile **pile_a);
 void				print_structure(t_pile *pile);
+void				pa(t_data *data);
+void				pb(t_data *data);

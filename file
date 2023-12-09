@@ -1,0 +1,721 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   arena_alloc.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/08 15:46:15 by rluiz             #+#    #+#             */
+/*   Updated: 2023/12/09 05:17:23 by rluiz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pushswap.h"
+
+static void	*arena_memset(void *s, int c, size_t n)
+{
+	size_t	i;
+
+	i = -1;
+	while (++i < n)
+		((unsigned char *)s)[i] = c;
+	return (s);
+}
+
+static int	is_power_of_two(uintptr_t x)
+{
+	return ((x & (x - 1)) == 0);
+}
+
+static uintptr_t	align_forward(uintptr_t ptr, size_t align)
+{
+	uintptr_t	p;
+	uintptr_t	a;
+	uintptr_t	modulo;
+
+	if (!is_power_of_two(align))
+		exit(1);
+	p = ptr;
+	a = (uintptr_t)align;
+	modulo = p % a;
+	if (modulo != 0)
+		p += a - modulo;
+	return (p);
+}
+
+void	*arena_alloc(t_arena *a, size_t size)
+{
+	uintptr_t	curr_ptr;
+	uintptr_t	offset;
+	void		*ptr;
+
+	curr_ptr = (uintptr_t)a->buf + (uintptr_t)a->curr_offset;
+	offset = align_forward(curr_ptr, sizeof(void *));
+	offset -= (uintptr_t)a->buf;
+	if (offset + size > a->buf_size)
+		return (NULL);
+	ptr = &((unsigned char *)a->buf)[offset];
+	a->prev_offset = offset;
+	a->curr_offset = offset + size;
+	arena_memset(ptr, 0, size);
+	return (ptr);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   arena.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/08 15:45:29 by rluiz             #+#    #+#             */
+/*   Updated: 2023/12/09 05:17:25 by rluiz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pushswap.h"
+
+void	*arena_init(size_t buffer_size)
+{
+	t_arena	*a;
+	void	*buf;
+
+	buf = malloc(buffer_size);
+	if (!buf)
+		return (NULL);
+	a = malloc(sizeof(t_arena));
+	if (!a)
+		return (NULL);
+	a->buf = buf;
+	a->buf_size = buffer_size;
+	a->curr_offset = 0;
+	a->prev_offset = 0;
+	return (a);
+}
+
+void	arena_reset(t_arena *a)
+{
+	a->curr_offset = 0;
+	a->prev_offset = 0;
+}
+
+void	arena_destroy(t_arena *a)
+{
+	arena_reset(a);
+	if (a->buf)
+		free(a->buf);
+	free(a);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   basefunc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/09 05:17:02 by rluiz             #+#    #+#             */
+/*   Updated: 2023/12/09 06:12:23 by rluiz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pushswap.h"
+
+void	rotate(t_pile **pile)
+{
+	t_pile	*first;
+	t_pile	*last;
+
+	if (pile == NULL || *pile == NULL || (*pile)->next == NULL)
+		return ;
+	first = (*pile)->first;
+	last = (*pile)->last;
+	*pile = first->next;
+	(*pile)->prev = NULL;
+	first->next = NULL;
+	first->prev = last;
+	last->next = first;
+	while (last->next != NULL)
+		last = last->next;
+	(*pile)->last = last;
+}
+
+void    ra(t_pile **pile_a)
+{
+    rotate(pile_a);
+    printf("ra\n");
+}
+
+void    rb(t_pile **pile_b)
+{
+    rotate(pile_b);
+    printf("rb\n");
+}
+
+void	rrotate(t_pile **pile)
+{
+	t_pile	*first;
+	t_pile	*last;
+
+	if (pile == NULL || *pile == NULL || (*pile)->next == NULL)
+		return ;
+	first = (*pile)->first;
+	last = (*pile)->last;
+	last->prev->next = NULL;
+	last->next = first;
+	last->prev = NULL;
+	first->prev = last;
+	*pile = last;
+	while (last->next != NULL)
+		last = last->next;
+	(*pile)->last = last;
+}
+
+void	rra(t_pile **pile_a)
+{
+    rrotate(pile_a);
+    printf("rra\n");
+}
+
+void	rrb(t_pile **pile_b)
+{
+    rrotate(pile_b);
+    printf("rrb\n");
+}
+
+void	swap(t_pile **pile)
+{
+	t_pile	*first;
+
+	if (pile == NULL || *pile == NULL)
+		return ;
+	*pile = (*pile)->next;
+	(*pile)->prev->prev = *pile;
+	(*pile)->prev->next = (*pile)->next;
+	if ((*pile)->next)
+		(*pile)->next->prev = (*pile)->prev;
+	(*pile)->next = (*pile)->prev;
+	(*pile)->prev = NULL;
+	first = (*pile)->first;
+	while (first->prev != NULL)
+		first = first->prev;
+	(*pile)->first = first;
+}
+
+void	sa(t_pile **pile_a)
+{
+	swap(pile_a);
+    printf("sa\n");
+}
+
+void	sb(t_pile **pile_b)
+{
+	swap(pile_b);
+    printf("sb\n");
+}
+
+void	ss(t_pile **pile_a, t_pile **pile_b)
+{
+    swap(pile_a);
+    swap(pile_b);
+    printf("ss\n");
+}
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/14 15:04:17 by rluiz             #+#    #+#             */
+/*   Updated: 2023/12/09 05:17:47 by rluiz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pushswap.h"
+
+int	ft_isdigit(const int c)
+{
+	return (c >= '0' && c <= '9');
+}
+
+static int	ft_isspace(const int c)
+{
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
+		|| c == '\r');
+}
+
+void	safe_exit_error(t_arena *arena)
+{
+	write(2, "Error\n", 6);
+	arena_destroy(arena);
+	exit(1);
+}
+
+long	ft_atoi(t_arena *arena, const char *str)
+{
+	long	sign;
+	long	result;
+
+	sign = 1;
+	result = 0;
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '+' || *str == '-')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (ft_isdigit(*str))
+	{
+		result = result * 10 + (*str - '0');
+		str++;
+	}
+	if (result * sign < INT_MIN || result * sign > INT_MAX)
+		safe_exit_error(arena);
+	return (result * sign);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/16 16:44:12 by rluiz             #+#    #+#             */
+/*   Updated: 2023/12/09 05:17:39 by rluiz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pushswap.h"
+
+int	count_words(char const *s, char c)
+{
+	int	count;
+	int	is_word;
+
+	count = 0;
+	is_word = 0;
+	while (*s)
+	{
+		if (*s != c && !is_word)
+		{
+			is_word = 1;
+			count++;
+		}
+		else if (*s == c)
+			is_word = 0;
+		s++;
+	}
+	return (count);
+}
+
+static char	*get_next_word(t_arena *arena, char **s, char c)
+{
+	char	*start;
+	char	*end;
+
+	while (**s == c)
+		(*s)++;
+	start = *s;
+	while (**s && **s != c)
+		(*s)++;
+	end = *s;
+	return (ft_substr(arena, start, 0, end - start));
+}
+
+char	**ft_split(t_arena *arena, char const *s, char c)
+{
+	char	**result;
+	char	*str;
+	int		words_count;
+	int		i;
+
+	if (!s)
+		return (NULL);
+	str = (char *)s;
+	words_count = count_words(s, c);
+	result = (char **)arena_alloc(arena, (words_count + 1) * sizeof(char *));
+	if (!result)
+		return (NULL);
+	i = 0;
+	while (i < words_count)
+	{
+		result[i] = get_next_word(arena, &str, c);
+		i++;
+	}
+	result[i] = NULL;
+	return (result);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/16 15:22:17 by rluiz             #+#    #+#             */
+/*   Updated: 2023/12/09 05:17:35 by rluiz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pushswap.h"
+
+int	ft_strlen(const char *s)
+{
+	int	len;
+
+	len = 0;
+	while (*s++)
+		len++;
+	return (len);
+}
+
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	char		*d;
+	const char	*s;
+	size_t		i;
+
+	d = (char *)dst;
+	s = (const char *)src;
+	if (!dst && !src)
+		return (NULL);
+	i = -1;
+	while (++i < n)
+		d[i] = s[i];
+	return (dst);
+}
+
+char	*ft_strdup(t_arena *arena, const char *s)
+{
+	char	*dup;
+	size_t	len;
+
+	len = ft_strlen(s);
+	dup = (char *)arena_alloc(arena, (len + 1) * sizeof(char));
+	if (!dup)
+		return (NULL);
+	ft_memcpy(dup, s, len);
+	return (dup);
+}
+
+char	*ft_substr(t_arena *arena, char const *s, unsigned int start,
+		size_t len)
+{
+	char	*substr;
+	size_t	i;
+	size_t	s_len;
+
+	if (!s)
+		return (NULL);
+	s_len = ft_strlen(s);
+	if (s_len < start)
+		return (ft_strdup(arena, ""));
+	if (s_len <= len)
+		len = s_len - start;
+	substr = (char *)arena_alloc(arena, (len + 1) * sizeof(char));
+	if (!substr)
+		return (NULL);
+	i = 0;
+	while (i < len && s[start + i])
+	{
+		substr[i] = s[start + i];
+		i++;
+	}
+	substr[i] = '\0';
+	return (substr);
+}
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/08/07 16:24:08 by rluiz             #+#    #+#              #
+#    Updated: 2023/12/09 05:35:08 by rluiz            ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+CC = gcc
+
+CFLAGS = -Wall -Wextra -Werror -g
+
+SRC = arena_alloc.c arena.c ft_atoi.c ft_split.c ft_substr.c pushswap.c basefunc.c
+
+OBJ = $(SRC:.c=.o)
+
+NAME = push_swap
+
+HEADER = pushswap.h
+
+%.o: %.c $(HEADER)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+
+clean:
+	rm -f $(OBJ)
+
+fclean:
+	rm -f $(NAME) $(OBJ)
+
+re: fclean all
+
+.PHONY: all clean fclean re/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pushswap.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/08 15:17:07 by rluiz             #+#    #+#             */
+/*   Updated: 2023/12/09 06:13:11 by rluiz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pushswap.h"
+
+t_data	*init_data(int argc, t_arena *arena)
+{
+	t_data	*data;
+
+	data = arena_alloc(arena, sizeof(t_data));
+	data->pile_a = arena_alloc(arena, sizeof(t_pile));
+	data->total_len = argc - 1;
+	data->arena = arena;
+	return (data);
+}
+
+void	fill_array(t_data *data, char **int_tab_str)
+{
+	int		i;
+	t_pile	*pile_a;
+
+	i = 1;
+	pile_a = data->pile_a;
+	while (i <= data->total_len)
+	{
+		pile_a->value = ft_atoi(data->arena, int_tab_str[i - 1]);
+		pile_a->position = i;
+		pile_a->size = data->total_len;
+		pile_a->cost = INT_MAX;
+		pile_a->target = NULL;
+		pile_a->next = (t_pile *)arena_alloc(data->arena, sizeof(t_pile));
+		pile_a->next->prev = pile_a;
+		pile_a->next->first = pile_a->first;
+		pile_a = pile_a->next;
+		i++;
+	}
+	pile_a->prev->next = NULL;
+	data->arena->curr_offset = data->arena->prev_offset;
+}
+
+void	fill_data(t_data *data, char **argv)
+{
+	char	**int_tab_str;
+	t_pile	*pile_a;
+
+	data->total_len = count_words(argv[1], ' ');
+	data->pile_a = (t_pile *)arena_alloc(data->arena, sizeof(t_pile));
+	*(data->pile_a) = (t_pile){.cost = INT_MAX, .size = data->total_len,
+		.next = NULL, .prev = NULL, .first = data->pile_a, .last = data->pile_a,
+		.target = NULL, .position = 0, .value = 0};
+	int_tab_str = ft_split(data->arena, argv[1], ' ');
+	fill_array(data, int_tab_str);
+	pile_a = data->pile_a;
+	while (pile_a->next != NULL)
+		pile_a = pile_a->next;
+	pile_a->last = pile_a;
+	while (pile_a->prev != NULL)
+	{
+		pile_a->prev->last = pile_a->last;
+		pile_a = pile_a->prev;
+	}
+}
+
+void	print_structure(t_pile *pile)
+{
+	while (pile != NULL)
+	{
+		printf("address: %p\n", (void *)pile);
+		printf("Value: %d\n", pile->value);
+		printf("Position: %d\n", pile->position);
+		printf("Size: %d\n", pile->size);
+		printf("Cost: %d\n", pile->cost);
+		printf("Target: %p\n", (void *)pile->target);
+		printf("Next: %p\n", (void *)pile->next);
+		printf("Prev: %p\n", (void *)pile->prev);
+		printf("First: %p\n", (void *)pile->first);
+		printf("Last: %p\n", (void *)pile->last);
+		printf("---------------------\n\n");
+		pile = pile->next;
+	}
+}
+
+void	print_piles(t_data *data)
+{
+	t_pile	*pile_a;
+	t_pile	*pile_b;
+
+	pile_a = data->pile_a;
+	pile_b = data->pile_b;
+	while (pile_a != NULL || pile_b != NULL)
+	{
+		if (pile_a != NULL)
+			printf("%d | ", pile_a->value);
+		else
+			printf("  | ");
+		if (pile_b != NULL)
+			printf("%d\n", pile_b->value);
+		else
+			printf("\n");
+		if (pile_a != NULL)
+			pile_a = pile_a->next;
+		if (pile_b != NULL)
+			pile_b = pile_b->next;
+	}
+	printf("\n");
+}
+
+int	check_args(int argc) //, char **argv)
+{
+	if (argc < 2)
+		return (1);
+	return (0);
+}
+
+static t_pile	*find_highest(t_pile *stack)
+{
+	int				highest;
+	t_pile	*highest_node;
+
+	if (NULL == stack)
+		return (NULL);
+	highest = INT_MIN;
+	while (stack)
+	{
+		if (stack->value > highest)
+		{
+			highest = stack->value;
+			highest_node = stack;
+		}
+		stack = stack->next;
+	}
+	return (highest_node);
+}
+
+void	sort_three(t_pile **pile_a)
+{
+	t_pile	*highest_node;
+
+	highest_node = find_highest(*pile_a);
+	if (*pile_a == highest_node)
+		ra(pile_a);
+	else if ((*pile_a)->next == highest_node)
+		rra(pile_a);
+	if ((*pile_a)->value > (*pile_a)->next->value)
+		sa(pile_a);
+}
+
+int	is_sorted(t_pile *stack)
+{
+	if (NULL == stack)
+		return (1);
+	while (stack->next)
+	{
+		if (stack->value > stack->next->value)
+			return (0);
+		stack = stack->next;
+	}
+	return (1);
+}
+
+int	main(int argc, char **argv)
+{
+	t_arena	*arena;
+	t_data	*data;
+
+	arena = arena_init(2048);
+	if (check_args(argc)) //, argv))
+		return (0);
+	data = init_data(argc, arena);
+	fill_data(data, argv);
+	if (is_sorted(data->pile_a))
+		return (0);
+	print_piles(data);
+	if (data->total_len == 3)
+		sort_three(&(data->pile_a));
+	printf("After sorting:\n");
+	print_piles(data);
+	arena_destroy(arena);
+	return (0);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pushswap.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/08 15:17:05 by rluiz             #+#    #+#             */
+/*   Updated: 2023/12/09 05:54:04 by rluiz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <ctype.h>
+#include <limits.h>
+#include <math.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+typedef struct s_arena
+{
+	void			*buf;
+	size_t			buf_size;
+	size_t			prev_offset;
+	size_t			curr_offset;
+}					t_arena;
+
+void				*arena_init(size_t buffer_size);
+void				arena_reset(t_arena *a);
+void				*arena_alloc(t_arena *a, size_t size);
+void				arena_destroy(t_arena *a);
+
+typedef struct s_pile
+{
+	struct s_pile	*next;
+	struct s_pile	*prev;
+	struct s_pile	*first;
+	struct s_pile	*last;
+	struct s_pile	*target;
+	int				position;
+	int				size;
+	int				cost;
+	int				value;
+}					t_pile;
+
+typedef struct s_data
+{
+	t_pile			*pile_a;
+	t_pile			*pile_b;
+	int				total_len;
+	t_arena			*arena;
+}					t_data;
+
+char				**ft_split(t_arena *arena, char const *s, char c);
+int					count_words(char const *s, char c);
+long				ft_atoi(t_arena *arena, const char *str);
+char				*ft_substr(t_arena *arena, char const *s,
+						unsigned int start, size_t len);
+void				ra(t_pile **pile_a);
+void				rra(t_pile **pile_a);
+void				sa(t_pile **pile_a);
+void				print_structure(t_pile *pile);
