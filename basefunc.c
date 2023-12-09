@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 05:17:02 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/09 18:23:37 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 20:20:14 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,14 @@ void	ra(t_pile **pile_a)
 {
 	rotate(pile_a);
 	update_attributes(pile_a);
-	printf("ra\n");
+	ft_printf("ra\n");
 }
 
 void	rb(t_pile **pile_b)
 {
 	rotate(pile_b);
 	update_attributes(pile_b);
-	printf("rb\n");
+	ft_printf("rb\n");
 }
 
 void	rrotate(t_pile **pile)
@@ -87,28 +87,28 @@ void	rra(t_pile **pile_a)
 {
 	rrotate(pile_a);
 	update_attributes(pile_a);
-	printf("rra\n");
+	ft_printf("rra\n");
 }
 
 void	rrb(t_pile **pile_b)
 {
 	rrotate(pile_b);
 	update_attributes(pile_b);
-	printf("rrb\n");
+	ft_printf("rrb\n");
 }
 
 void	rrr(t_pile **pile_a, t_pile **pile_b)
 {
 	rrotate(pile_a);
 	rrotate(pile_b);
-	printf("rrr\n");
+	ft_printf("rrr\n");
 }
 
 void	rr(t_pile **pile_a, t_pile **pile_b)
 {
 	rotate(pile_a);
 	rotate(pile_b);
-	printf("rr\n");
+	ft_printf("rr\n");
 }
 
 void	swap(t_pile **pile)
@@ -133,20 +133,20 @@ void	swap(t_pile **pile)
 void	sa(t_pile **pile_a)
 {
 	swap(pile_a);
-	printf("sa\n");
+	ft_printf("sa\n");
 }
 
 void	sb(t_pile **pile_b)
 {
 	swap(pile_b);
-	printf("sb\n");
+	ft_printf("sb\n");
 }
 
 void	ss(t_pile **pile_a, t_pile **pile_b)
 {
 	swap(pile_a);
 	swap(pile_b);
-	printf("ss\n");
+	ft_printf("ss\n");
 }
 
 void	pa(t_data *data)
@@ -173,7 +173,7 @@ void	pa(t_data *data)
 	update_attributes(&data->pile_a);
 	if (data->pile_b != NULL)
 		update_attributes(&data->pile_b);
-	printf("pa\n");
+	ft_printf("pa\n");
 }
 
 void	pb(t_data *data)
@@ -200,5 +200,5 @@ void	pb(t_data *data)
 	update_attributes(&data->pile_b);
 	if (data->pile_a != NULL)
 		update_attributes(&data->pile_a);
-	printf("pb\n");
+	ft_printf("pb\n");
 }

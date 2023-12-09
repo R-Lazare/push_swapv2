@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:07 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/09 19:31:19 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 20:21:38 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_data	*init_data(int argc, t_arena *arena)
 
 void	safe_exit_error(t_arena *arena)
 {
-	printf("Error\n");
+	ft_printf("Error\n");
 	arena_destroy(arena);
 	exit(0);
 }
@@ -117,50 +117,6 @@ void	fill_data(t_data *data, char **argv, int argc)
 		pile_a->prev->last = pile_a->last;
 		pile_a = pile_a->prev;
 	}
-}
-
-void	print_structure(t_pile *pile)
-{
-	while (pile != NULL)
-	{
-		printf("address: %p\n", (void *)pile);
-		printf("Value: %d\n", pile->value);
-		printf("Position: %d\n", pile->position);
-		printf("Size: %d\n", pile->size);
-		printf("Cost: %d\n", pile->cost);
-		printf("Target: %p\n", (void *)pile->target);
-		printf("Next: %p\n", (void *)pile->next);
-		printf("Prev: %p\n", (void *)pile->prev);
-		printf("First: %p\n", (void *)pile->first);
-		printf("Last: %p\n", (void *)pile->last);
-		printf("---------------------\n\n");
-		pile = pile->next;
-	}
-}
-
-void	print_piles(t_data *data)
-{
-	t_pile	*pile_a;
-	t_pile	*pile_b;
-
-	pile_a = data->pile_a;
-	pile_b = data->pile_b;
-	while (pile_a != NULL || pile_b != NULL)
-	{
-		if (pile_a != NULL)
-			printf("%d | ", pile_a->value);
-		else
-			printf("  | ");
-		if (pile_b != NULL)
-			printf("%d\n", pile_b->value);
-		else
-			printf("\n");
-		if (pile_a != NULL)
-			pile_a = pile_a->next;
-		if (pile_b != NULL)
-			pile_b = pile_b->next;
-	}
-	printf("\n");
 }
 
 int	check_args(int argc) //, char **argv)

@@ -6,13 +6,14 @@
 /*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:05 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/09 19:31:36 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 20:21:18 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -73,3 +74,4 @@ void				rrotate(t_pile **pile);
 int					ft_isalpha(const int c);
 void				safe_exit_error(t_arena *arena);
 int					ft_isdigit(const int c);
+int					ft_printf(const char *src, ...);
