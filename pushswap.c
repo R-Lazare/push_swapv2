@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:07 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/08 18:20:19 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 06:13:11 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ t_data	*init_data(int argc, t_arena *arena)
 
 	data = arena_alloc(arena, sizeof(t_data));
 	data->pile_a = arena_alloc(arena, sizeof(t_pile));
-	data->pile_b = arena_alloc(arena, sizeof(t_pile));
 	data->total_len = argc - 1;
 	data->arena = arena;
 	return (data);
@@ -58,9 +57,6 @@ void	fill_data(t_data *data, char **argv)
 	*(data->pile_a) = (t_pile){.cost = INT_MAX, .size = data->total_len,
 		.next = NULL, .prev = NULL, .first = data->pile_a, .last = data->pile_a,
 		.target = NULL, .position = 0, .value = 0};
-	*(data->pile_b) = (t_pile){.cost = INT_MAX, .size = 0, .next = NULL,
-		.prev = NULL, .first = NULL, .last = NULL, .target = NULL,
-		.position = 0, .value = 0};
 	int_tab_str = ft_split(data->arena, argv[1], ' ');
 	fill_array(data, int_tab_str);
 	pile_a = data->pile_a;
@@ -88,7 +84,7 @@ void	print_structure(t_pile *pile)
 		printf("Prev: %p\n", (void *)pile->prev);
 		printf("First: %p\n", (void *)pile->first);
 		printf("Last: %p\n", (void *)pile->last);
-		printf("---------------------\n");
+		printf("---------------------\n\n");
 		pile = pile->next;
 	}
 }
@@ -115,6 +111,7 @@ void	print_piles(t_data *data)
 		if (pile_b != NULL)
 			pile_b = pile_b->next;
 	}
+	printf("\n");
 }
 
 int	check_args(int argc) //, char **argv)
@@ -124,38 +121,50 @@ int	check_args(int argc) //, char **argv)
 	return (0);
 }
 
-t_pile	*find_higher(t_pile *pile)
+static t_pile	*find_highest(t_pile *stack)
 {
-	int	higher;
+	int				highest;
+	t_pile	*highest_node;
 
-	higher = INT_MIN;
-	while (pile != NULL)
+	if (NULL == stack)
+		return (NULL);
+	highest = INT_MIN;
+	while (stack)
 	{
-		if (pile->value > higher)
-			higher = pile->value;
-		pile = pile->next;
+		if (stack->value > highest)
+		{
+			highest = stack->value;
+			highest_node = stack;
+		}
+		stack = stack->next;
 	}
-	pile = pile->first;
-	while (pile != NULL)
-	{
-		if (pile->value == higher)
-			return (pile);
-		pile = pile->next;
-	}
-	return (NULL);
+	return (highest_node);
 }
 
-void	sort_three(t_pile *pile_a)
+void	sort_three(t_pile **pile_a)
 {
-	t_pile	*higher;
-	
-	higher = find_higher(pile_a);
-	if (higher->position == 1)
+	t_pile	*highest_node;
+
+	highest_node = find_highest(*pile_a);
+	if (*pile_a == highest_node)
 		ra(pile_a);
-	else if (higher->position == 2)
+	else if ((*pile_a)->next == highest_node)
 		rra(pile_a);
-	if (higher->position == 3)
+	if ((*pile_a)->value > (*pile_a)->next->value)
 		sa(pile_a);
+}
+
+int	is_sorted(t_pile *stack)
+{
+	if (NULL == stack)
+		return (1);
+	while (stack->next)
+	{
+		if (stack->value > stack->next->value)
+			return (0);
+		stack = stack->next;
+	}
+	return (1);
 }
 
 int	main(int argc, char **argv)
@@ -167,11 +176,13 @@ int	main(int argc, char **argv)
 	if (check_args(argc)) //, argv))
 		return (0);
 	data = init_data(argc, arena);
-	// argument is a single string containing all the numbers like "1 2 -3 4 -5"
 	fill_data(data, argv);
+	if (is_sorted(data->pile_a))
+		return (0);
 	print_piles(data);
 	if (data->total_len == 3)
-		sort_three(data);
+		sort_three(&(data->pile_a));
+	printf("After sorting:\n");
 	print_piles(data);
 	arena_destroy(arena);
 	return (0);

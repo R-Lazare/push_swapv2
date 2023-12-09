@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:05 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/08 18:19:59 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/09 05:54:04 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,3 +59,7 @@ int					count_words(char const *s, char c);
 long				ft_atoi(t_arena *arena, const char *str);
 char				*ft_substr(t_arena *arena, char const *s,
 						unsigned int start, size_t len);
+void				ra(t_pile **pile_a);
+void				rra(t_pile **pile_a);
+void				sa(t_pile **pile_a);
+void				print_structure(t_pile *pile);
