@@ -14,18 +14,18 @@
 
 void	ft_putchar(char c)
 {
-    write(1, &c, 1);
-    return ;
+	write(1, &c, 1);
+	return ;
 }
 
 void	ft_putstr(char *str)
 {
-    int i;
+	int	i;
 
-    i = -1;
-    while (str[++i])
-        ft_putchar(str[i]);
-    return ;
+	i = -1;
+	while (str[++i])
+		ft_putchar(str[i]);
+	return ;
 }
 
 void	ft_pourcent(const char *src, va_list list, int i)

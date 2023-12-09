@@ -6,7 +6,7 @@
 #    By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/07 16:24:08 by rluiz             #+#    #+#              #
-#    Updated: 2023/12/09 20:22:05 by rluiz            ###   ########.fr        #
+#    Updated: 2023/12/09 20:51:29 by rluiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,9 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRC = arena_alloc.c arena.c ft_atoi.c ft_split.c ft_substr.c pushswap.c basefunc.c ft_printf.c
+SRC = arena_alloc.c arena.c ft_atoi.c ft_split.c ft_substr.c pushswap.c \
+		basefunc.c basefunc2.c basefunc3.c basefunc4.c ft_printf.c \
+		init.c sort.c sort_helper.c
 
 OBJ = $(SRC:.c=.o)
 
