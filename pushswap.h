@@ -50,10 +50,12 @@ typedef struct s_data
 {
 	t_pile			*pile_a;
 	t_pile			*pile_b;
-	int				*total_len;
+	int				total_len;
 	t_arena			*arena;
 }					t_data;
 
 char				**ft_split(t_arena *arena, char const *s, char c);
 int					count_words(char const *s, char c);
 long				ft_atoi(t_arena *arena, const char *str);
+char				*ft_substr(t_arena *arena, char const *s,
+						unsigned int start, size_t len);

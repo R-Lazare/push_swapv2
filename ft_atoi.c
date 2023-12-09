@@ -23,6 +23,13 @@ static int	ft_isspace(const int c)
 		|| c == '\r');
 }
 
+void	safe_exit_error(t_arena *arena)
+{
+	write(2, "Error\n", 6);
+	arena_destroy(arena);
+	exit(1);
+}
+
 long	ft_atoi(t_arena *arena, const char *str)
 {
 	long	sign;
@@ -47,4 +54,3 @@ long	ft_atoi(t_arena *arena, const char *str)
 		safe_exit_error(arena);
 	return (result * sign);
 }
-
