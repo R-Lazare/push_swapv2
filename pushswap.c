@@ -93,11 +93,69 @@ void	print_structure(t_pile *pile)
 	}
 }
 
+void	print_piles(t_data *data)
+{
+	t_pile	*pile_a;
+	t_pile	*pile_b;
+
+	pile_a = data->pile_a;
+	pile_b = data->pile_b;
+	while (pile_a != NULL || pile_b != NULL)
+	{
+		if (pile_a != NULL)
+			printf("%d | ", pile_a->value);
+		else
+			printf("  | ");
+		if (pile_b != NULL)
+			printf("%d\n", pile_b->value);
+		else
+			printf("\n");
+		if (pile_a != NULL)
+			pile_a = pile_a->next;
+		if (pile_b != NULL)
+			pile_b = pile_b->next;
+	}
+}
+
 int	check_args(int argc) //, char **argv)
 {
 	if (argc < 2)
 		return (1);
 	return (0);
+}
+
+t_pile	*find_higher(t_pile *pile)
+{
+	int	higher;
+
+	higher = INT_MIN;
+	while (pile != NULL)
+	{
+		if (pile->value > higher)
+			higher = pile->value;
+		pile = pile->next;
+	}
+	pile = pile->first;
+	while (pile != NULL)
+	{
+		if (pile->value == higher)
+			return (pile);
+		pile = pile->next;
+	}
+	return (NULL);
+}
+
+void	sort_three(t_pile *pile_a)
+{
+	t_pile	*higher;
+	
+	higher = find_higher(pile_a);
+	if (higher->position == 1)
+		ra(pile_a);
+	else if (higher->position == 2)
+		rra(pile_a);
+	if (higher->position == 3)
+		sa(pile_a);
 }
 
 int	main(int argc, char **argv)
@@ -111,6 +169,10 @@ int	main(int argc, char **argv)
 	data = init_data(argc, arena);
 	// argument is a single string containing all the numbers like "1 2 -3 4 -5"
 	fill_data(data, argv);
-	print_structure(data->pile_a);
+	print_piles(data);
+	if (data->total_len == 3)
+		sort_three(data);
+	print_piles(data);
+	arena_destroy(arena);
 	return (0);
 }
