@@ -9,7 +9,7 @@ SRC = arena_alloc.c arena.c ft_atoi.c ft_split.c ft_substr.c pushswap.c \
 # Source files for checker
 SRC2 = arena_alloc.c arena.c ft_atoi.c ft_split.c ft_substr.c checker.c \
        basefunc.c basefunc2.c basefunc3.c basefunc4.c ft_printf.c \
-       init.c sort.c sort_helper.c get_next_line.c pushswap.c
+       init.c sort.c sort_helper.c get_next_line.c get_next_line_utils.c pushswap.c
 
 OBJ = $(SRC:.c=.o)
 OBJ2 = $(SRC2:.c=.o)

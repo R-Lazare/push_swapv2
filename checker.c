@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 18:42:47 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/11 19:36:02 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/11 19:46:04 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,13 @@ static void	parse_command(t_data *data, char *command)
 
 int	main(int argc, char **argv)
 {
-	t_arena *arena;
-	char *next_line;
-	t_data *data;
+	t_arena	*arena;
+	char	*next_line;
+	t_data	*data;
 
 	arena = arena_init(100000);
 	if (1 == argc || check_args(argc))
-	{
-		arena_destroy(arena);
-		return (0);
-	}
+		safe_exit(arena);
 	else if (2 == argc)
 		argv = ft_split(arena, argv[1], 32);
 	data = init_data(argc, arena);

@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:05 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/11 19:35:17 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/11 19:55:13 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,8 @@ t_pile				*find_cheapest(t_pile *b);
 void				push_to_a(t_data *data);
 void				sort(t_pile **pile_a, t_pile **pile_b, t_data *data);
 void				push_all_but_three(t_data *data);
-char				*get_next_line(int fd, t_arena	*arena);
+char				*get_next_line(int fd, t_arena *arena);
 int					ft_strlen(const char *s);
+void				safe_exit(t_arena *arena);
+char				*ft_join_line(char *src, char *buff, t_arena *arena);
+int					ft_strlen_line(const char *dest);

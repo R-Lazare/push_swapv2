@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:07 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/11 19:31:11 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/11 19:45:48 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 void	safe_exit_error(t_arena *arena)
 {
 	ft_printf("Error\n");
+	arena_destroy(arena);
+	exit(0);
+}
+
+void	safe_exit(t_arena *arena)
+{
 	arena_destroy(arena);
 	exit(0);
 }
