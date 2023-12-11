@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 15:17:05 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/09 20:51:57 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/11 19:35:17 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void				rra(t_pile **pile_a);
 void				rrb(t_pile **pile_b);
 void				sa(t_pile **pile_a);
 void				sb(t_pile **pile_b);
+void				ss(t_pile **pile_a, t_pile **pile_b);
 void				print_structure(t_pile *pile);
 void				pa(t_data *data);
 void				pb(t_data *data);
@@ -78,6 +79,7 @@ int					ft_isdigit(const int c);
 int					ft_printf(const char *src, ...);
 void				update_attributes(t_pile **pile);
 void				rotate(t_pile **pile);
+int					check_args(int argc);
 void				rrotate(t_pile **pile);
 void				swap(t_pile **pile);
 t_data				*init_data(int argc, t_arena *arena);
@@ -95,3 +97,5 @@ t_pile				*find_cheapest(t_pile *b);
 void				push_to_a(t_data *data);
 void				sort(t_pile **pile_a, t_pile **pile_b, t_data *data);
 void				push_all_but_three(t_data *data);
+char				*get_next_line(int fd, t_arena	*arena);
+int					ft_strlen(const char *s);
