@@ -12,6 +12,8 @@
 
 #include "pushswap.h"
 
+#define BUFFER_SIZE 4
+
 int	ft_check_line(char *dest)
 {
 	int	i;
@@ -95,22 +97,22 @@ void	ft_cute_line(char *dest)
 
 char	*get_next_line(int fd, t_arena *arena)
 {
-	static char	buff[4];
+	static char	buff[BUFFER_SIZE + 1];
 	int			i;
 	char		*dest;
 
 	i = 1;
 	dest = NULL;
-	if (4 <= 0 || fd < 0)
+	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	if (ft_check_line(buff) == 1)
 	{
-		ft_cute_line(buff);
+		ft_cut_line(buff); // Rename function to `ft_cut_line`
 		dest = ft_join_line(dest, buff, arena);
 	}
 	while (i > 0 && ft_check_line(buff) == 0)
 	{
-		i = read(fd, buff, 4);
+		i = read(fd, buff, BUFFER_SIZE);
 		if (i <= 0)
 			return (dest);
 		buff[i] = '\0';
