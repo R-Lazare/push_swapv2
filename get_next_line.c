@@ -75,7 +75,7 @@ int	ft_strlen_line(const char *dest)
 // 	return (dest);
 // }
 
-void	ft_cute_line(char *dest)
+void	ft_cut_line(char *dest)
 {
 	int	i;
 	int	j;
@@ -87,12 +87,9 @@ void	ft_cute_line(char *dest)
 	if (dest[i] == '\n')
 		i++;
 	while (dest[i])
-	{
-		dest[j] = dest[i];
-		i++;
-		j++;
-	}
-	dest[j] = '\0';
+		dest[j++] = dest[i++];
+	while (j < BUFFER_SIZE)  // Clear out the remaining buffer content
+		dest[j++] = '\0';
 }
 
 char	*get_next_line(int fd, t_arena *arena)
