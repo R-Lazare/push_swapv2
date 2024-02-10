@@ -17,7 +17,7 @@ static char	*allocate_and_copy(const char *src, const char *buff,
 {
 	char	*dest;
 	int		length;
-	int 	i;
+	int		i;
 
 	length = ft_strlen_line(buff) + 1;
 	if (src)

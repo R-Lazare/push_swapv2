@@ -40,41 +40,6 @@ int	ft_strlen_line(const char *dest)
 	return (i);
 }
 
-// char	*ft_join_line(char *src, char *buff, t_arena *arena)
-// {
-// 	int		i;
-// 	int		j;
-// 	char	*dest;
-
-// 	i = 0;
-// 	j = 0;
-// 	if (!src)
-// 		dest = arena_alloc(arena, sizeof(char) * ft_strlen_line(buff) + 2);
-// 	else
-// 	{
-// 		dest = arena_alloc(arena, sizeof(char) * ft_strlen_line(buff)
-// 			+ ft_strlen(src) + 2);
-// 		while (src[i])
-// 		{
-// 			dest[i] = src[i];
-// 			i++;
-// 		}
-// 	}
-// 	while (buff[j] && buff[j] != '\n')
-// 	{
-// 		dest[i] = buff[j];
-// 		i++;
-// 		j++;
-// 	}
-// 	dest[i] = '\n';
-// 	if (buff[j] == '\n')
-// 		i++;
-// 	dest[i] = '\0';
-// 	if (dest[0] == '\0')
-// 		return (NULL);
-// 	return (dest);
-// }
-
 void	ft_cut_line(char *dest)
 {
 	int	i;
@@ -88,7 +53,7 @@ void	ft_cut_line(char *dest)
 		i++;
 	while (dest[i])
 		dest[j++] = dest[i++];
-	while (j < BUFFER_SIZE)  // Clear out the remaining buffer content
+	while (j < BUFFER_SIZE)
 		dest[j++] = '\0';
 }
 
@@ -104,7 +69,7 @@ char	*get_next_line(int fd, t_arena *arena)
 		return (NULL);
 	if (ft_check_line(buff) == 1)
 	{
-		ft_cut_line(buff); // Rename function to `ft_cut_line`
+		ft_cut_line(buff);
 		dest = ft_join_line(dest, buff, arena);
 	}
 	while (i > 0 && ft_check_line(buff) == 0)
